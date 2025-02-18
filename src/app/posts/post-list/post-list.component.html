@@ -1,0 +1,12 @@
+<mat-accordion>
+  @if (posts.length > 0) { @for (post of posts; track $index) {
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      {{ post.title }}
+    </mat-expansion-panel-header>
+    <p>{{ post.content }}</p>
+  </mat-expansion-panel>
+  } } @else {
+  <p class="mat-body-1">no posts added yet</p>
+  }
+</mat-accordion>

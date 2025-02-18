@@ -1,0 +1,21 @@
+mat-form-field,
+textarea{
+    width: 100%;
+}
+
+button{
+    width: 10%;
+    color: red;
+}
+
+mat-card{
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+textarea, input{
+    background-color: antiquewhite;
+    border-radius: 4px;
+    padding: 5px;
+    max-height: 13rem;
+}
