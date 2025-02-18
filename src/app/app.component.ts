@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
-import { PostCreateComponent } from "./posts/post-create/post-create.component";
 import { HeaderComponent } from './header/header.component';
-import { PostListComponent } from './posts/post-list/post-list.component';
 import { Post } from './posts/post-list/post.model';
+import { PostService } from './posts/post.service';
+import { RouterModule, RouterOutlet } from '@angular/router';
+
 
 @Component({
   selector: 'app-root',
-  imports: [ PostCreateComponent, HeaderComponent, PostListComponent],
+  imports: [ HeaderComponent,RouterOutlet, RouterModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
+  providers: [PostService]
 })
 export class AppComponent {
   title = 'mean-course';
