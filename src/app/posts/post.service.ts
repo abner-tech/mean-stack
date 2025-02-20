@@ -9,34 +9,36 @@ import { Router } from '@angular/router';
 })
 export class PostService {
   private posts: Post[] = [];
-  private postUpdated = new Subject<Post[]>();
+  private postUpdated = new Subject< {posts: Post[], postCount: number}>();
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  getPosts() {
+  getPosts(postsPerPage: number, currentPage: number) {
+    const queryParamenter = `?pageSize=${postsPerPage}&page=${currentPage}`
     this.http
-      .get<{ message: string; posts: any }>('http://localhost:3000/api/posts')
+      .get<{ message: string; posts: any, maxPosts: number }>('http://localhost:3000/api/posts'+queryParamenter)
       .pipe(
         map((postData) => {
-          return postData.posts.map(
+          return { posts:  postData.posts.map(
             (post: {
-              id: string;
               title: string;
               content: string;
               _id: string;
+              imagePath: string;
             }) => {
               return {
                 title: post.title,
                 content: post.content,
                 id: post._id,
+                imagePath: post.imagePath,
               };
             }
-          );
+          ), maxPosts: postData.maxPosts};
         })
       )
       .subscribe((transformedPost) => {
-        this.posts = transformedPost;
-        this.postUpdated.next([...this.posts]);
+        this.posts = transformedPost.posts;
+        this.postUpdated.next( {posts: [...this.posts], postCount: transformedPost.maxPosts});
       });
   }
 
@@ -50,51 +52,53 @@ export class PostService {
     postData.append('content', post.content);
     postData.append('image', image, post.title);
     this.http
-      .post<{ message: string; postId: string }>(
+      .post<{ message: string; post: Post }>(
         'http://localhost:3000/api/posts',
-        postData 
+        postData
       )
       .subscribe((response) => {
-        const newPost: Post = {
-          id: response.postId,
-          title: post.title,
-          content: post.content,
-        };
-        
-        post.id = response.postId;
-        this.posts.push(post);
-        this.postUpdated.next([...this.posts]);
+
         this.router.navigate(['/']);
       });
   }
 
   deletePost(postId: string) {
-    this.http
-      .delete<{ message: string }>('http://localhost:3000/api/posts/' + postId)
-      .subscribe((response) => {
-        this.posts = this.posts.filter((post) => post.id !== postId);
-        this.postUpdated.next([...this.posts]);
-      });
+     return this.http
+      .delete<{ message: string }>('http://localhost:3000/api/posts/' + postId);
   }
 
   getPost(id: string) {
-    return this.http.get<{ _id: string; title: string; content: string }>(
-      'http://localhost:3000/api/posts/' + id
-    );
+    return this.http.get<{
+      _id: string,
+      title: string,
+      content: string,
+      imagePath: string
+    }>('http://localhost:3000/api/posts/' + id);
     //return { ...this.posts.find((post) => post.id === id) };
   }
 
   updatePost(post: Post) {
+    let postData: Post | FormData;
+    if (typeof(post.imagePath) === 'object') {
+      postData = new FormData();
+      postData.append('id', post.id!)
+      postData.append('title', post.title);
+      postData.append('content', post.content);
+      //means image was chenged, thus its no longer a path but an object in the
+      //post instance
+      postData.append('image', post.imagePath!, post.title);
+    } else {
+      postData = {
+        id: post.id,
+        title: post.title,
+        content: post.content,
+        imagePath: post.imagePath,
+      };
+    }
     this.http
-      .put('http://localhost:3000/api/posts/' + post.id, post)
+      .put('http://localhost:3000/api/posts/' + post.id, postData)
       .subscribe((response) => {
-        const updatePost = [...this.posts];
-        const oldPostIndex = updatePost.findIndex((p) => {
-          post.id === p.id;
-        });
-        updatePost[oldPostIndex] = post;
-        this.posts = updatePost;
-        this.postUpdated.next([...this.posts]);
+
         this.router.navigate(['/']);
       });
   }

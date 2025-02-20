@@ -33,7 +33,7 @@ export class PostCreateComponent implements OnInit {
   private mode: string = 'create';
   private postId!: string;
   post: any;
-  isLoading = false;
+  isLoading = false; 
   form!: FormGroup;
   imagePreview!: string;
   imageSelected = false;
@@ -50,7 +50,7 @@ export class PostCreateComponent implements OnInit {
         id: null,
         title: this.form.value.title,
         content: this.form.value.content,
-
+        imagePath: null,
       };
       this.postService.addPost(post, this.form.value.image);
     } else {
@@ -58,6 +58,7 @@ export class PostCreateComponent implements OnInit {
         id: this.postId,
         title: this.form.value.title,
         content: this.form.value.content,
+        imagePath: this.form.value.image,
       };
       this.postService.updatePost(post);
       this.isLoading = false;
@@ -71,7 +72,7 @@ export class PostCreateComponent implements OnInit {
     this.imageSelected = true;
     
     this.form.patchValue({ image: file });
-    this.form.get('image')!.updateValueAndValidity;
+    this.form.get('image')?.updateValueAndValidity;
     const reader = new FileReader();
     reader.onload = () => {
       this.imagePreview = reader.result as string;
@@ -107,13 +108,15 @@ export class PostCreateComponent implements OnInit {
               id: postData._id,
               title: postData.title,
               content: postData.content,
+              image: postData.imagePath,
             };
             this.form.setValue({
               title: this.post.title,
               content: this.post.content,
+              image: this.post.image,
             });
           });
-      } else {
+      } else { 
         this.mode = 'create';
         this.postId = null!;
       }

@@ -1,23 +1,42 @@
 @if (isLoading) {
-  <mat-spinner>
-  </mat-spinner>
+<mat-spinner> </mat-spinner>
 } @else if (!isLoading) {
- 
+
 <mat-accordion>
   @if (posts.length > 0) { @for (post of posts; track $index) {
   <mat-expansion-panel>
     <mat-expansion-panel-header>
       {{ post.title }}
     </mat-expansion-panel-header>
+
+    <div class="post-image">
+      <img [src]="post.imagePath" [alt]="post.title" />
+    </div>
     <p>{{ post.content }}</p>
     <mat-action-row>
-      <a mat-button color="primary" [routerLink]="['/edit', post.id]" routerLinkActive="router-link-active"  routerLinkActive="router-link-active" >EDIT</a>
-      <button mat-button color="warn" (click)="onDelete(post.id!)">DELETE</button>
+      <a
+        mat-button
+        color="primary"
+        [routerLink]="['/edit', post.id]"
+        routerLinkActive="router-link-active"
+        >EDIT</a
+      >
+      <button mat-button color="warn" (click)="onDelete(post.id!)">
+        DELETE
+      </button>
     </mat-action-row>
   </mat-expansion-panel>
   } } @else {
   <p class="mat-body-1">no posts added yet</p>
   }
 </mat-accordion>
-
-}
+@if (posts.length > 0) {
+<mat-paginator
+  [length]="totalPosts"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="pageSizeOptions"
+  aria-label="paginator"
+  (page)="onChangedPage($event)"
+>
+</mat-paginator>
+} }

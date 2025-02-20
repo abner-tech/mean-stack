@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const { default: mongoose } = require("mongoose");
+const mongoose = require("mongoose");
+const path = require('path')
 
 const postsRoutes = require('./routes/posts')
 
@@ -12,11 +13,12 @@ mongoose
     console.log("connected to database");
   })
   .catch(() => {
-    console.log("COnnection error");
+    console.log("Connection error");
   });
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use("/images", express.static(path.join('backend/images')))
 
 // Middleware to enable CORS
 app.use((req, res, next) => {
