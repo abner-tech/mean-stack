@@ -1,37 +1,53 @@
 <mat-card>
-  <form (submit)="onSavePost(postForm)" #postForm="ngForm">
+  @if(isLoading) {
+  <mat-spinner></mat-spinner>
+  } @else if(!isLoading){
+  <form [formGroup]="form" (submit)="onSavePost()">
     <mat-form-field>
       <mat-label>Post Title</mat-label>
-      <input type="text"
-       matInput 
-       name="title"
-       [ngModel]="post.title"
-       required
-       #title="ngModel"
-       placeholder="Post Title"/>
-       @if (title.invalid) {
-        <mat-error>Enter valid title</mat-error>
+      <input
+        type="text"
+        matInput
+        formControlName="title"
+        placeholder="Post Title"
+      />
+      @if (form.get('title')?.invalid) {
+      <mat-error>Enter valid title</mat-error>
       }
     </mat-form-field>
+    <div>
+      <button
+        mat-stroked-button
+        type="button"
+        color="primary"
+        (click)="filePicker.click()"
+      >
+        Pick Image
+      </button>
+      <input type="file" hidden #filePicker (change)="onImagePicked($event)" />
+    </div>
+    @if (imagePreview !== '' && imagePreview && form.get('image')?.valid) {
+    <div class="image-preview">
+      <img [src]="imagePreview" [alt]="form.value.title" />
+    </div>
+    }
+    @if (!form.get('image')?.valid && imageSelected) {
+      <mat-error> select valid image file</mat-error>
+    }
     <mat-form-field>
       <mat-label>Post Message</mat-label>
-      <textarea 
-      matInput 
-      rows="6" 
-      name="content"
-      [ngModel]="post.content"
-      required
-      #content="ngModel"
-      placeholder="Post Message"> 
-    </textarea>
-    @if (content.invalid) {
+      <textarea
+        matInput
+        rows="6"
+        formControlName="content"
+        placeholder="Post Message"
+      >
+      </textarea>
+      @if (form.get('content')?.invalid ) {
       <mat-error> enter vald content</mat-error>
-    }
+      }
     </mat-form-field>
-    <button mat-raised-button
-     color="accent" 
-     type="submit">
-      Save post
-    </button>
+    <button mat-raised-button color="accent" type="submit">Save post</button>
   </form>
+  }
 </mat-card>

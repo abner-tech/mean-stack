@@ -1,3 +1,8 @@
+@if (isLoading) {
+  <mat-spinner>
+  </mat-spinner>
+} @else if (!isLoading) {
+ 
 <mat-accordion>
   @if (posts.length > 0) { @for (post of posts; track $index) {
   <mat-expansion-panel>
@@ -14,3 +19,5 @@
   <p class="mat-body-1">no posts added yet</p>
   }
 </mat-accordion>
+
+}

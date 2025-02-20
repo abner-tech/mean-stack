@@ -5,6 +5,7 @@ import { PostService } from './posts/post.service';
 import { RouterModule, RouterOutlet } from '@angular/router';
 
 
+
 @Component({
   selector: 'app-root',
   imports: [ HeaderComponent,RouterOutlet, RouterModule],

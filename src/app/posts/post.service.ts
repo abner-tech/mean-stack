@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Post } from './post-list/post.model';
 import { map, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { response } from 'express';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +10,8 @@ import { response } from 'express';
 export class PostService {
   private posts: Post[] = [];
   private postUpdated = new Subject<Post[]>();
-  constructor(private http: HttpClient) {}
+
+  constructor(private http: HttpClient, private router: Router) {}
 
   getPosts() {
     this.http
@@ -43,16 +44,27 @@ export class PostService {
     return this.postUpdated.asObservable();
   }
 
-  addPost(post: Post) {
+  addPost(post: Post, image: File) {
+    const postData = new FormData();
+    postData.append('title', post.title);
+    postData.append('content', post.content);
+    postData.append('image', image, post.title);
     this.http
       .post<{ message: string; postId: string }>(
         'http://localhost:3000/api/posts',
-        post
+        postData 
       )
       .subscribe((response) => {
+        const newPost: Post = {
+          id: response.postId,
+          title: post.title,
+          content: post.content,
+        };
+        
         post.id = response.postId;
         this.posts.push(post);
         this.postUpdated.next([...this.posts]);
+        this.router.navigate(['/']);
       });
   }
 
@@ -66,23 +78,24 @@ export class PostService {
   }
 
   getPost(id: string) {
-    return this.http.get
-    <{_id: string , title: string, content: string }>
-    ('http://localhost:3000/api/posts/' + id)
+    return this.http.get<{ _id: string; title: string; content: string }>(
+      'http://localhost:3000/api/posts/' + id
+    );
     //return { ...this.posts.find((post) => post.id === id) };
   }
 
-  updatePost(post:  Post) {
+  updatePost(post: Post) {
     this.http
       .put('http://localhost:3000/api/posts/' + post.id, post)
       .subscribe((response) => {
         const updatePost = [...this.posts];
-        const oldPostIndex = updatePost.findIndex( (p) => {
+        const oldPostIndex = updatePost.findIndex((p) => {
           post.id === p.id;
         });
         updatePost[oldPostIndex] = post;
         this.posts = updatePost;
         this.postUpdated.next([...this.posts]);
+        this.router.navigate(['/']);
       });
   }
 }

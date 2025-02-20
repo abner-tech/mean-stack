@@ -4,7 +4,7 @@ textarea{
 }
 
 button{
-    width: 10%;
+    width: 15%;
     color: red;
 }
 
@@ -18,4 +18,21 @@ textarea, input{
     border-radius: 4px;
     padding: 5px;
     max-height: 13rem;
+}
+
+mat-spinner{
+    margin: auto;
+}
+
+div button {
+    margin-bottom: 1rem;
+}
+
+.image-preview{
+height: 5rem;
+margin: 1rem 0;
+}
+
+.image-preview img {
+    height: 100%;
 }
