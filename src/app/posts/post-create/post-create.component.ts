@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {
   ReactiveFormsModule,
-  NgForm,
   FormGroup,
   FormControl,
   Validators,
@@ -28,6 +27,7 @@ import { mimeType } from './mime-type.validator';
   ],
   templateUrl: './post-create.component.html',
   styleUrl: './post-create.component.css',
+  providers: []
 })
 export class PostCreateComponent implements OnInit {
   private mode: string = 'create';

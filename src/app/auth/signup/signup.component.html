@@ -1,1 +1,63 @@
-<p>signup works!</p>
+<mat-card>
+    @if(isLoading) {
+      <div class="d-flex justify-content-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div></div>
+    } @else if(!isLoading){
+    <form [formGroup]="signUpFormData" (submit)="onSignUpClicked()">
+        <mat-form-field >
+            <mat-label>First Name</mat-label>
+            <input
+              type="text"
+              matInput
+              formControlName="firstName"
+              placeholder="First Name"
+            />
+            @if (signUpFormData.get('firstName')?.invalid) {
+            <mat-error>Enter valid First Name</mat-error>
+            }
+          </mat-form-field>
+      
+        <mat-form-field >
+            <mat-label>Last Name</mat-label>
+            <input
+              type="text"
+              matInput
+              formControlName="lastName"
+              placeholder="Last Name"
+            />
+            @if (signUpFormData.get('lastName')?.invalid) {
+            <mat-error>Enter valid Last Name</mat-error>
+            }
+          </mat-form-field>
+      <mat-form-field >
+        <mat-label>Email Address</mat-label>
+        <input
+          type="email"
+          matInput
+          formControlName="email"
+          placeholder="Email Address"
+        />
+        @if (signUpFormData.get('email')?.invalid) {
+        <mat-error>Enter valid email address</mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label class="label label-info" >Password</mat-label>
+        <input
+          type="password"
+          matInput
+          formControlName="password"
+          placeholder="Password"
+          
+        />
+        @if (signUpFormData.get('password')?.invalid) {
+        <mat-error>Enter valid password</mat-error>
+        }
+      </mat-form-field>
+      <button color="accent" class="btn btn-primary" type="submit">Register</button>
+    </form>
+    }
+  </mat-card>
+  

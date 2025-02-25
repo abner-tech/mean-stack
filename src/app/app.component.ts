@@ -8,7 +8,7 @@ import { RouterModule, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [ HeaderComponent,RouterOutlet, RouterModule],
+  imports: [ HeaderComponent,RouterOutlet, RouterModule,],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   providers: [PostService]
